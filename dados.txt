@@ -12,7 +12,7 @@ setWebhook - Telegram
 https://api.telegram.org/bot(SEU_TOKEN)/setwebhook?url=https://(SUA_URL)/seubot.php
 ------------
 
-https://api.telegram.org/bot269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw/setwebhook?url=http://golvirtualbot.goldvirtual.com.br/virtualbot.php
+https://api.telegram.org/bot269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw/setwebhook?url=https://golvirtualbot.goldvirtual.com.br/virtualbot.php
 
 Resultado
 {"ok":true,"result":true,"description":"Webhook was set"}

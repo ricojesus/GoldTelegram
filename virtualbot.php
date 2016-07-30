@@ -19,12 +19,12 @@ require('parser.php');
 // ** Token teste Ticardo ** //
 //define('BOT_TOKEN', '269387957:AAH5K_-dRKlw0pQb07Ontu8NxBG83pr2xhU');
 // ** Token teste Tiago ** //
-define('BOT_TOKEN', '181646159:AAEagAKnu-cpgHwBBbyegPBAAT7NO63_dfc');
+//define('BOT_TOKEN', '181646159:AAEagAKnu-cpgHwBBbyegPBAAT7NO63_dfc');
 
 
 // ** Token da GOLD para implementar no ambiente de produção essa linha deve ser descomentada e a linha superior comentada. ** //
 
-//define('BOT_TOKEN', '269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw');
+define('BOT_TOKEN', '269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 
 //Metodo de entrada das requisições, interpreta os comandos e direciona para o Parse
@@ -67,7 +67,16 @@ function sendMessage($method, $parameters) {
 	file_get_contents(API_URL.$method, false, $context );
 }
 
-//obtém as atualizações do bot
+// ** codigo para envio automatico quando no site ** //
+$update_response = file_get_contents("php://input");
+$update = json_decode($update_response, true);
+if (isset($update["message"])) {
+  processMessage($update["message"]);
+}
+// ** fim do codigo **//
+
+// ** Codigo para envio durante testes ** //
+/*
 $update_response = file_get_contents(API_URL."getUpdates");
 $response = json_decode($update_response, true);
 $length = count($response["result"]);
@@ -77,4 +86,5 @@ $update = $response["result"][$length-1];
 if (isset($update["message"])) {
  	processMessage($update["message"]);
 }
+*/
 ?>

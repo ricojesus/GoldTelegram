@@ -14,7 +14,7 @@
 * 
 */
 
-define('DEFAULT_FOOTER', "\n Sempre que precisar de auxilio me chame digitando /ajuda \n by @GodVirtualBot - goldvirtual.com.br");
+define('DEFAULT_FOOTER', "\n Atenção: Recomendo que me use preferencialmente de forma privada, para isso basta clicar aqui @GoldVirtualBOT. \n Sempre que precisar de auxilio me chame digitando /ajuda \n by @GodVirtualBot - goldvirtual.com.br");
 
 //Metodo principal responsavel por direcionar a requisicao para o metodo correspondente
 function getResult($mensagem, $text){
@@ -97,11 +97,11 @@ function getAjuda(){
 	$resultado = "";
 
 	$resultado = "Olá, eu sou o BOT da Gold Virtual Airlines! \n\n";
-	$resultado .= "Veja abaixo todos os comandos e funcionalidades que estão disponiveis: \n";
+	$resultado .= "Veja abaixo todos os comandos que estão disponiveis: \n";
 	$resultado .= "/ajuda - Comando para ver as funcionalidades do BOT \n";
 	$resultado .= "/regras - Comando para ver as Regras do Grupo \n";
-	$resultado .= "/metar - Comando para visualizar o metar e TAF \n";
-	$resultado .= "/vatsim - Comando para visualizar os Controladores Online na VATBRZ \n";
+	$resultado .= "/metar - Comando para visualizar o METAR e TAF \n";
+	$resultado .= "/vatsim - Comando para visualizar  Controladores na VATBRZ \n";
 	$resultado .= "\nSiga-nos nas Redes Sociais: \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -137,7 +137,7 @@ function getVatsim(){
 		$linha = str_replace('</tr>','',$linha);
 		$registro = '';
 	
-		for ($i = 1; $i <= 7; $i++) {
+		for ($i = 1; $i <= 5; $i++) {
 			$pos_linha_ini = strpos($linha,'<td');
 			$pos_linha_fim = strpos($linha,'</td');
 			$campo=  substr($linha, $pos_linha_ini,$pos_linha_fim); 
@@ -153,7 +153,7 @@ function getVatsim(){
 		
 			if($i == 1 || $i==2 ){
 				$registro .= clean($campo) . ' - ';   
-			}elseif($i==6){
+			}elseif($i==5){
 			   $registro .= clean($campo);
 			}
 		}
@@ -168,7 +168,7 @@ function getVatsim(){
 	if ($retorno == ''){
 		$retorno = 'Não temos controladores onlines no momento';
 	}
-	return $resultado = "A Gold Virtual Airlines informa os controladores Online na rede VATSIM: \n". $retorno. "\n Sempre que precisar de auxilio me chame digitando /ajuda \n by @GodVirtualBot - www.goldvirtual.com.br";
+	return $resultado = "A Gold Virtual Airlines informa os controladores Online na rede VATSIM: \n". $retorno. DEFAULT_FOOTER;
 }
 
 function clean($text){
