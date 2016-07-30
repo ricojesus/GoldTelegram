@@ -1,0 +1,37 @@
+--------------------------
+-- Dados do BOT da Gold --
+--------------------------
+Acesso via: telegram.me/GoldVirtualBOT.
+
+Token: 269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw
+
+
+setWebhook - Telegram
+----------------------
+-- Modelo --
+https://api.telegram.org/bot(SEU_TOKEN)/setwebhook?url=https://(SUA_URL)/seubot.php
+------------
+
+https://api.telegram.org/bot269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw/setwebhook?url=http://golvirtualbot.goldvirtual.com.br/virtualbot.php
+
+Resultado
+{"ok":true,"result":true,"description":"Webhook was set"}
+
+
+--------------------------
+-- Bot para testes Ricardo
+--------------------------
+
+Bot Name
+@RicardoTeste01Bot
+
+Bot User
+RicardoTeste01Bot
+
+token
+269387957:AAH5K_-dRKlw0pQb07Ontu8NxBG83pr2xhU
+
+Endereço
+telegram.me/RicardoTeste01Bot
+
+
