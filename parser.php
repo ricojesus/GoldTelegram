@@ -8,13 +8,14 @@
 *
 * Versão Data       Autor            Descricao
 * ------ ---------- ---------------- --------------------------------------
-* 1.0    23/07/2016 Ricardo Jesus	 Versão inicial
-* 1.1	 29/07/2016	Tiago 			 Melhorias gerais e inclusao do Vatsim
+* 1.0   23/07/2016 	Ricardo Jesus	 	Versão inicial
+* 1.1	29/07/2016	Tiago Rosa	 	Melhorias gerais e inclusao do Vatsim
+* 1.2	30/07/2016	Rodrigo Figueiredo	Edição dos textos
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
 
-define('DEFAULT_FOOTER', "\n Atenção: Recomendo que me use preferencialmente de forma privada, para isso basta clicar aqui @GoldVirtualBOT. \n Sempre que precisar de auxilio me chame digitando /ajuda \n by @GodVirtualBot - goldvirtual.com.br");
+define('DEFAULT_FOOTER', "\n <b>" . " --- IMPORTANTE --- " . "</b> \n  ⚠️ Atenção: Recomendo que me use preferencialmente de forma privada, para isso basta clicar aqui ➡️ @GoldVirtualBOT. \n \n Sempre que precisar de auxilio me chame digitando /ajuda \n by goldvirtual.com.br ");
 
 //Metodo principal responsavel por direcionar a requisicao para o metodo correspondente
 function getResult($mensagem, $text){
@@ -37,14 +38,14 @@ function getResult($mensagem, $text){
 function getStart($userName){
 	$resultado = "";
 
-	$resultado = "Olá <b>" . $userName . "</b>, cordial boa!\n";
+	$resultado = "Olá <b>" . $userName . "</b>, cordial boa!\n\n";
 	$resultado .= "Bem vindo ao Grupo da Gold Virtual Airlines no Telegram. \n";
 	$resultado .= "Aqui você poderá conversar, se informar e se divertir com assuntos sobre aviação real e virtual. \n\nPara se informar das regras e das facilidades automatizadas que estão disponíveis siga 2 passos abaixo: \n";
-	$resultado .= "1)Clique aqui @GodVirtualBot \n";
-	$resultado .= "2)Digite /regras \n";
+	$resultado .= "1) Clique aqui @GodVirtualBot \n";
+	$resultado .= "2) Digite /regras \n";
 	
 	return $resultado .= DEFAULT_FOOTER;
-}
+	}
 
 //Metodo para captura de Metar e TAF
 function getMetar($icao){
@@ -53,7 +54,7 @@ function getMetar($icao){
 		
 		if($icao === false)
 		{
-			$resultado = "Olá, informe um ICAO válido para que eu consiga te mostrar o METAR e o TAF \n (Ex.: /metar SBRF) \n";
+			$resultado = "🚨 Olá, informe um ICAO válido para que eu consiga te mostrar o METAR e o TAF \n (Ex.: /metar SBRF) \n";
 			$resultado .= DEFAULT_FOOTER;
 			return $resultado;
 		}
@@ -61,17 +62,16 @@ function getMetar($icao){
 			$metar = file_get_contents('http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local='. $icao .'&msg=metar');
 
 			if (strpos($metar, 'localizada') == 0){
-				$resultado = 'Olá, veja como está o METAR de '. strtoupper($icao) . ' neste momento!';
-				$resultado .= $metar . " \n";
-				$resultado .= 'trouxe também o TAF com as previsões das próximas horas!';
-
+				$resultado = '🌤 Olá, veja como está o METAR de ' . strtoupper($icao) . ' neste momento! ';
+				$resultado .= "\n\n➡️" . substr($metar, 14) . "\n";
+				$resultado .= 'Trouxe também o TAF com as previsões das próximas horas, fique ligado!';
 				$taf = file_get_contents('http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local='. $icao .'&msg=taf');
-
-				$resultado .=  $taf;
-				$resultado .= " \n" .DEFAULT_FOOTER;
-			}else{
-				$resultado = "Olá, eu sou o BOT da Gold Virtual Airlines! informe um ICAO válido para que eu consiga te informar o METAR \n Ex.: /metar SBRF \n \n";
+				$resultado .=  "\n\n➡️" . substr($taf, 14);				
+				
 				$resultado .= DEFAULT_FOOTER;
+			}else{
+				$resultado = "🚨 Olá, informe um ICAO válido para que eu consiga te mostrar o METAR e o TAF \n (Ex.: /metar SBRF) \n";
+				$resultado .= " \n" .DEFAULT_FOOTER;
 			}
 		}
 		return $resultado;
@@ -84,11 +84,11 @@ function getMetar($icao){
 function getRegras(){
 	$resultado = "";
 
-	$resultado = "<b>*** Regras do Grupo ***</b>\n\n";
-	$resultado .= "* A informação, instrução, respeito, aviação e diversão, deverão ser os principios de qualquer interação no grupo. \n";
-	$resultado .= "* Proibido qualquer ato descriminatório como religião, cor, raça, etnia, politica e opção sexual. \n";
-	$resultado .= "* Proibido o compartilhamento de conteúdos piratas. \n";
-	$resultado .= "* Este canal é regido pelo Código de Ética e Conduta da Gold Virtual Airlines publicado no site da VA. \n";
+	$resultado = "<b>📌 *** Regras do Grupo ***</b>\n\n";
+	$resultado .= "1⃣ A informação, instrução, respeito, aviação e diversão, deverão ser os principios de qualquer interação no grupo.  \n";
+	$resultado .= "2⃣ Proibido qualquer ato descriminatório como religião, cor, raça, etnia, politica e opção sexual.  \n";
+	$resultado .= "2⃣ Proibido qualquer ato descriminatório como religião, cor, raça, etnia, politica e opção sexual.  \n";
+	$resultado .= "4⃣ Proibido o compartilhamento de conteúdos piratas. \n";
 	
 	return $resultado .= DEFAULT_FOOTER;
 }
@@ -96,13 +96,13 @@ function getRegras(){
 function getAjuda(){
 	$resultado = "";
 
-	$resultado = "Olá, eu sou o BOT da Gold Virtual Airlines! \n\n";
+	$resultado = "<b>💡 Olá, eu sou o BOT da Gold Virtual Airlines!</b>  \n\n";
 	$resultado .= "Veja abaixo todos os comandos que estão disponiveis: \n";
-	$resultado .= "/ajuda - Comando para ver as funcionalidades do BOT \n";
-	$resultado .= "/regras - Comando para ver as Regras do Grupo \n";
-	$resultado .= "/metar - Comando para visualizar o METAR e TAF \n";
-	$resultado .= "/vatsim - Comando para visualizar  Controladores na VATBRZ \n";
-	$resultado .= "\nSiga-nos nas Redes Sociais: \n";
+	$resultado .= "✔️ /ajuda - Comando para ver as funcionalidades do BOT  \n";
+	$resultado .= "✔️ /regras - Comando para ver as Regras do Grupo  \n";
+	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
+	$resultado .= "✔️ /vatsim - Comando para visualizar  Controladores na VATBRZ  \n";
+	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
 	$resultado .= "Telegram: www.telegram.me/goldvirtual \n";
@@ -111,7 +111,7 @@ function getAjuda(){
 	return $resultado .= DEFAULT_FOOTER;
 }
 
-function getVatsim(){
+function getvatsim(){
 	//Busca Tabela
 	$url = file_get_contents('https://stats.vatsim.net/who.html');
 	$pos = strpos($url,'<h2>Controllers</h2>');
@@ -157,7 +157,7 @@ function getVatsim(){
 			   $registro .= clean($campo);
 			}
 		}
-		if (substr($registro,0,1) == 'S'){
+		if (substr($registro,0,2) == 'SB'){
 			$retorno .= $registro . "\n\n";
 		}
 		
@@ -166,9 +166,11 @@ function getVatsim(){
 		} 
 	}
 	if ($retorno == ''){
-		$retorno = 'Não temos controladores onlines no momento';
+		$retorno = "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 123.450 \n";
 	}
-	return $resultado = "A Gold Virtual Airlines informa os controladores Online na rede VATSIM: \n". $retorno. DEFAULT_FOOTER;
+	return $resultado = "✅ A Gold Virtual informa o(s) ATC(s) Online na VATBRZ: \n \n". 
+	
+	$retorno. DEFAULT_FOOTER;
 }
 
 function clean($text){
@@ -176,3 +178,4 @@ function clean($text){
 	$text = preg_replace("/(\r\n|\n|\r|\t)/i", '', $text);
 	return $text;
 }
+
