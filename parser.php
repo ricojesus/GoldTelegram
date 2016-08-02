@@ -62,7 +62,7 @@ function getMetar($icao){
 			$metar = file_get_contents('http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local='. $icao .'&msg=metar');
 
 			if (strpos($metar, 'localizada') == 0){
-				$resultado = '🌤 Olá, veja como está o METAR de ' . strtoupper($icao) . ' neste momento! ';
+				$resultado = '🌤 Olá, veja como está o METAR de <b> ' . strtoupper($icao) . ' </b> neste momento! ';
 				$resultado .= "\n\n➡️" . substr($metar, 14) . "\n";
 				$resultado .= 'Trouxe também o TAF com as previsões das próximas horas, fique ligado!';
 				$taf = file_get_contents('http://www.redemet.aer.mil.br/api/consulta_automatica/index.php?local='. $icao .'&msg=taf');
