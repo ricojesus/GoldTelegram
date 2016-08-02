@@ -16,7 +16,7 @@
 require('parser.php');
 
 // Token é o codigo unico cedido pelo Telegram, somente alterar caso seja requisitado um novo Token ao Telegram 
-// ** Token teste Ticardo ** //
+// ** Token teste Ricardo ** //
 //define('BOT_TOKEN', '269387957:AAH5K_-dRKlw0pQb07Ontu8NxBG83pr2xhU');
 // ** Token teste Tiago ** //
 //define('BOT_TOKEN', '181646159:AAEagAKnu-cpgHwBBbyegPBAAT7NO63_dfc');
@@ -40,7 +40,7 @@ function processMessage($message) {
 			$text = $message['from']['first_name'];
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/metar") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text),'disable_web_page_preview'=>true));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/regras") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('regras', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/ajuda") {
@@ -68,11 +68,13 @@ function sendMessage($method, $parameters) {
 }
 
 // ** codigo para envio automatico quando no site ** //
+
 $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
 if (isset($update["message"])) {
   processMessage($update["message"]);
 }
+
 // ** fim do codigo **//
 
 // ** Codigo para envio durante testes ** //
