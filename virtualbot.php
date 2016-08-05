@@ -10,6 +10,9 @@
 * Versão Data       Autor            Descricao
 * ------ ---------- ---------------- --------------------------------------
 * 1.0    23/07/2016 Ricardo Jesus	 Versão inicial
+* 1.1    04/08/2016 Tiago Rosa       1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
+*									 2.Desabilitado o Rodapé (webpage) da mensagem de start)
+*									 3.Alterado o comando de vatsim para vatbrz
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -32,20 +35,23 @@ function processMessage($message) {
 	// processa a mensagem recebida
 	$message_id = $message['message_id'];
 	$chat_id = $message['chat']['id'];
-
-	if (isset($message['text'])) {
+	$user = $message['new_chat_member']['first_name'];
+	if($user != ''){
+		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+	}elseif(isset($message['text'])) {
 		$text = $message['text'];//texto recebido na mensagem
 
 		if (strtolower(substr($text, 0, 6)) == "/start") {
 			$text = $message['from']['first_name'];
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+
 		} elseif (strtolower(substr($text, 0, 6)) == "/metar") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/regras") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('regras', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/ajuda") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
-		} elseif (strtolower(substr($text, 0, 10)) == "/vatsim") {
+		} elseif (strtolower(substr($text, 0, 10)) == "/vatbrz") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('vatsim', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
