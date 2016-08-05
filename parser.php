@@ -11,6 +11,7 @@
 * 1.0   23/07/2016 	Ricardo Jesus	 	Versão inicial
 * 1.1	29/07/2016	Tiago Rosa	 	Melhorias gerais e inclusao do Vatsim
 * 1.2	30/07/2016	Rodrigo Figueiredo	Edição dos textos
+* 1.3   04/08/2016  Tiago Rosa		1. Mudança na forma como pegar os Atcs da Vatsim e mudado o nome do comando na função ajuda para VATBRZ
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -101,7 +102,7 @@ function getAjuda(){
 	$resultado .= "✔️ /ajuda - Comando para ver as funcionalidades do BOT  \n";
 	$resultado .= "✔️ /regras - Comando para ver as Regras do Grupo  \n";
 	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
-	$resultado .= "✔️ /vatsim - Comando para visualizar  Controladores na VATBRZ  \n";
+	$resultado .= "✔️ /vatbrz - Comando para visualizar  Controladores na VATBRZ  \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -112,65 +113,53 @@ function getAjuda(){
 }
 
 function getvatsim(){
-	//Busca Tabela
-	$url = file_get_contents('https://stats.vatsim.net/who.html');
-	$pos = strpos($url,'<h2>Controllers</h2>');
-	$tabela_ini = substr($url, $pos, strlen($url));
-	$pos_fim = strpos($tabela_ini,'</table>');
-	$tabela_fim = substr($tabela_ini, 1, $pos_fim);
-	//---
+$url = file_get_contents('https://extraction.import.io/query/extractor/2461882d-1900-4d76-9692-43cdd29a1c2c?_apikey=f50390b575ce430ca4ef0aa36d0bea8560f0ff3ca97d78f53041c81d8f63cf60b13f1e1683575554ea1766bd1b74a5f9060378680cb4315db4209c9a56d9f8885782c90d8738131a70b35e5b3c4b5563&url=http%3A%2F%2Fvatview.com%2Fvatview_display_list.php%3Ftyped%3Datc');
 	 
-	 //Busca Linha
-	$pos = strpos($tabela_fim, '<tr class="odd">');
-	$tabela = substr($tabela_fim, $pos);
-	$tabela = str_replace('<tr class="odd">','<tr>',$tabela);
-	//--
+  $json_str = json_decode($url);
+  //print_r($json_str);
+
+ $extractorData = $json_str->extractorData;
+ //echo 'url: ' . $extractorData->url . '<br/>';
+ //echo 'resourceId: ' . $extractorData->resourceId . '<br/>';
+
+ $data = $extractorData->data;
 	$retorno = '';
 	 
-	$processa = true;
-	while ($processa){
-		$pos_ini = strpos($tabela,'<tr>');
-		$pos_fim = strpos($tabela,'</tr>');
-		$linha = substr($tabela, $pos_ini,($pos_fim+5));
-		$tabela = str_replace($linha,'',$tabela);
-		$linha = str_replace('<tr>','',$linha);
-		$linha = str_replace('</tr>','',$linha);
+ foreach ($data as $d) {
+  foreach ($d as $group) {
+   foreach ($group as $g) {
 		$registro = '';
 	
-		for ($i = 1; $i <= 5; $i++) {
-			$pos_linha_ini = strpos($linha,'<td');
-			$pos_linha_fim = strpos($linha,'</td');
-			$campo=  substr($linha, $pos_linha_ini,$pos_linha_fim); 
-			$linha = str_replace($campo,'',$linha);
-			$campo = str_replace('<td>', '', $campo);
-			$campo = str_replace('</td>', '', $campo);
-			$campo = str_replace('</a>', '', $campo);
-			$pos_a = strpos($campo, '>');
+    if (isset($g->callsign) && isset( $g->Name) && isset($g->Frequency)){
+     $callsign = $g->callsign;
+     $Name = $g->Name;
+     $Frequency = $g->Frequency;
+
+     foreach ($callsign as $value) {
+       $registro .=  $value->text . ' - ';
+
 		
-			if (!($pos_a === false)) {
-				$campo = substr($campo, $pos_a+1, strlen($campo));
 			}
 		
-			if($i == 1 || $i==2 ){
-				$registro .= clean($campo) . ' - ';   
-			}elseif($i==5){
-			   $registro .= clean($campo);
+     foreach ($Name as $value) {
+       $registro .=  $value->text . ' - ';
 			}
+     foreach ($Frequency as $value) {
+      $registro .=  $value->text;
 		}
 		if (substr($registro,0,2) == 'SB'){
 			$retorno .= $registro . "\n\n";
 		}
-		
-		if ($pos_ini === false) {
-			$processa = false;
+    } 
 		} 
+  }
 	}
 	if ($retorno == ''){
 		$retorno = "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 123.450 \n";
 	}
-	return $resultado = "✅ A Gold Virtual informa o(s) ATC(s) Online na VATBRZ: \n \n". 
+	$resultado = "✅ A Gold Virtual informa o(s) ATC(s) Online na VATBRZ: \n\n" ;
 	
-	$retorno. DEFAULT_FOOTER;
+	return $resultado . $retorno. DEFAULT_FOOTER;
 }
 
 function clean($text){
