@@ -13,6 +13,7 @@
 * 1.1    04/08/2016 Tiago Rosa       1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
 *									 2.Desabilitado o Rodapé (webpage) da mensagem de start)
 *									 3.Alterado o comando de vatsim para vatbrz
+* 1.2	06/08/2016	Ricardo Jesus	 Alteração do comando vatbrz para atcvatbrz
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -51,7 +52,7 @@ function processMessage($message) {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('regras', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/ajuda") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
-		} elseif (strtolower(substr($text, 0, 10)) == "/vatbrz") {
+		} elseif (strtolower(substr($text, 0, 10)) == "/atcvatbrz") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('vatsim', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
