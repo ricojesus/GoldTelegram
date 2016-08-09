@@ -34,4 +34,12 @@ token
 Endereço
 telegram.me/RicardoTeste01Bot
 
+--------------------------
+-- Dados do Banco de dados
+--------------------------
+Base de Dados: goldv250_virtualbot
+Usuário: goldv250_vbot
+Senha: GVBot01
+--------------------------
+
 

@@ -16,11 +16,12 @@
 *------ ---------- ---------------- --------------------------------------
 * 
 */
+require('DAO.php');
 
 define('DEFAULT_FOOTER', "\n <b>" . " --- IMPORTANTE --- " . "</b> \n  ⚠️ Atenção: Recomendo que me use preferencialmente de forma privada, para isso basta clicar aqui ➡️ @GoldVirtualBOT. \n \n Sempre que precisar de auxilio me chame digitando /ajuda \n by goldvirtual.com.br ");
 
 //Metodo principal responsavel por direcionar a requisicao para o metodo correspondente
-function getResult($mensagem, $text){
+function getResult($mensagem, $text, $user){
 	$out = '';
 
 	if($mensagem=="start"){
@@ -33,7 +34,12 @@ function getResult($mensagem, $text){
 		$out = getAjuda();
 	} elseif($mensagem=="vatsim"){
 		$out = getVatsim();
+	} elseif($mensagem=="estatisticas"){
+		$out = getEstatisticas();
 	}
+	
+	gravaEstatistica($mensagem, $user);
+
 	return $out;
 }
 
@@ -104,6 +110,7 @@ function getAjuda(){
 	$resultado .= "✔️ /regras - Comando para ver as Regras do Grupo  \n";
 	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
 	$resultado .= "✔️ /atcvatbrz - Comando para visualizar  Controladores na VATBRZ  \n";
+	$resultado .= "✔️ /estatisticas - Comando para visualizar os comandos mais consultados \n";	
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -167,5 +174,41 @@ function clean($text){
 	$text = trim( preg_replace( '/\s+/', ' ', $text ) );  
 	$text = preg_replace("/(\r\n|\n|\r|\t)/i", '', $text);
 	return $text;
+}
+
+function getEstatisticas(){
+	$resultado = '';
+
+	try{
+		$dao = new DAO();
+
+		$lista = $dao->executeQuery("SELECT ds_comando, COUNT(*) as contador FROM estatisticas group by ds_comando order by 2 desc");
+
+		$resultado = "--- Top serviços acessados ---";
+		/*
+		while($row=mysql_fetch_array($lista, MYSQL_ASSOC)) {
+			$resultado .= $row["ds_comando"]. " - " $row["contador"] . " \n";
+		}
+		*/
+
+	}catch(Exception $e){
+		$resultado = "Erro gravando estatisticas \n " . $e;
+	}	
+
+	return $resultado;
+}
+
+function gravaEstatistica ($comando, $user){
+	$resultado = '';
+
+	try{
+		$dao = new DAO();
+
+		$dao->executeQuery("insert into estatisticas (nm_usuario, ds_comando, dt_consulta) values ('". $user . "','" . $comando . "')" );
+
+	}catch(Exception $e){
+		$resultado = "Erro gravando estatisticas \n " . $e;
+	}
+	return $resultado;
 }
 
