@@ -14,6 +14,7 @@
 *									 2.Desabilitado o Rodapé (webpage) da mensagem de start)
 *									 3.Alterado o comando de vatsim para vatbrz
 * 1.2	06/08/2016	Ricardo Jesus	 Alteração do comando vatbrz para atcvatbrz
+* 1.3	08/08/2016	Tiago Rosa	 Implementação do comando pilotosvatbrz
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -53,7 +54,9 @@ function processMessage($message) {
 		} elseif (strtolower(substr($text, 0, 6)) == "/ajuda") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 10)) == "/atcvatbrz") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('vatsim', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 13)) == "/pilotosvatbrz") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotovatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}
