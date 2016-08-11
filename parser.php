@@ -32,7 +32,7 @@ function getResult($mensagem, $text){
 		$out = getRegras();
 	} elseif($mensagem=="ajuda"){
 		$out = getAjuda();
-	} elseif($mensagem=="vatsim"){
+	} elseif($mensagem=="atcvatbrz"){
 		$out = getVatsim();
 	} elseif($mensagem=="pilotosvatbrz"){
 		$out = getPilotovatbrz();

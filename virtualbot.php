@@ -55,8 +55,8 @@ function processMessage($message) {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 10)) == "/atcvatbrz") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
-		} elseif (strtolower(substr($text, 0, 13)) == "/pilotosvatbrz") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotovatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosvatbrz") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}
