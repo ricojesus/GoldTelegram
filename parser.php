@@ -106,7 +106,8 @@ function getAjuda(){
 	$resultado .= "✔️ /ajuda - Comando para ver as funcionalidades do BOT  \n";
 	$resultado .= "✔️ /regras - Comando para ver as Regras do Grupo  \n";
 	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
-	$resultado .= "✔️ /atcvatbrz - Comando para visualizar  Controladores na VATBRZ  \n";
+	$resultado .= "✔️ /atcvatbrz - Comando para visualizar Controladores na VATBRZ  \n";
+	$resultado .= "✔️ /pilotosvatbrz - Comando para visualizar os pilotos voando na VATBRZ  \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -219,4 +220,4 @@ function clean($text){
 	$text = preg_replace("/(\r\n|\n|\r|\t)/i", '', $text);
 	return $text;
 }
-
+?>
