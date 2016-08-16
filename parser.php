@@ -15,6 +15,7 @@
 * 1.4 	06/08/2016 	Ricardo Jesus		Ajustes para o comando atcvatbrz e tabulacao do metodo vatsim
 * 1.5   08/08/2016 	Tiago Rosa  		Inserindo comando /pilotovatbrz
 * 1.6	13/08/2016	Rodrigo Figueiredo	Edição de textos e layout
+* 1.7   15/08/2016	Tiago Rosa		Inserindo comando /cartas
 *------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -37,6 +38,8 @@ function getResult($mensagem, $text){
 		$out = getVatsim();
 	} elseif($mensagem=="pilotosvatbrz"){
 		$out = getPilotovatbrz();
+	} elseif($mensagem=="cartas"){
+		$out = getCartas(substr($text,8,4),substr($text,12));
 	}
 	return $out;
 }
@@ -221,5 +224,37 @@ function clean($text){
 	$text = trim( preg_replace( '/\s+/', ' ', $text ) );  
 	$text = preg_replace("/(\r\n|\n|\r|\t)/i", '', $text);
 	return $text;
+}
+function getCartas($icao,$tipo){
+	try{
+		$resultado = '';
+		if($icao === false || $tipo===false)
+		{
+			$resultado = "🚨 Olá, informe um ICAO válido para que eu consiga te mostrar as cartas correspondentes \n (Ex.: /cartas SBJV SID) \n";
+			$resultado .= DEFAULT_FOOTER;
+			return $resultado;
+		}
+		else{		
+			$icao = trim($icao);
+			$tipo = trim($tipo);
+			$link = file_get_contents('http://www.aisweb.aer.mil.br/api/?apiKey=1017549855&apiPass=4e1194fd-3711-11e6-a8ca-00505680c1b4&area=cartas&IcaoCode='.$icao.'&tipo='.$tipo);
+			$xml = simplexml_load_string($link);
+			$qtde = $xml->cartas['total'];
+			if($qtde>0){
+				$resultado = "✉ A Gold Virtual informa a(s) Carta(s) " .$tipo. " para o aeródromo ".$icao.": \n\n";
+				foreach($xml->cartas->item as $item){
+					$resultado .= "<a href ='".$item->link."'>".$item->nome."</a>\n";
+				}
+				$resultado .= DEFAULT_FOOTER;
+			}
+			else{
+				$resultado = "🚨 Olá, Não conseguimos encontra nenhuma carta {$tipo} para o aeródromo {$icao}";
+				$resultado .= DEFAULT_FOOTER;
+			}
+		}
+		return $resultado;
+	}catch (Exception $e){
+		return 'Erro consultando cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
+	}
 }
 ?>

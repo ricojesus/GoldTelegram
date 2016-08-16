@@ -9,12 +9,13 @@
 *
 * Versão Data       Autor            Descricao
 * ------ ---------- ---------------- --------------------------------------
-* 1.0    23/07/2016 Ricardo Jesus	 Versão inicial
-* 1.1    04/08/2016 Tiago Rosa       1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
-*									 2.Desabilitado o Rodapé (webpage) da mensagem de start)
-*									 3.Alterado o comando de vatsim para vatbrz
-* 1.2	06/08/2016	Ricardo Jesus	 Alteração do comando vatbrz para atcvatbrz
-* 1.3	08/08/2016	Tiago Rosa	 Implementação do comando pilotosvatbrz
+* 1.0    23/07/2016 Ricardo Jesus	Versão inicial
+* 1.1    04/08/2016 Tiago Rosa       	1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
+*					2.Desabilitado o Rodapé (webpage) da mensagem de start)
+*					3.Alterado o comando de vatsim para vatbrz
+* 1.2	06/08/2016	Ricardo Jesus	Alteração do comando vatbrz para atcvatbrz
+* 1.3	08/08/2016	Tiago Rosa	Implementação do comando pilotosvatbrz
+* 1.4	15/08/2016	Tiago Rosa	Implementação do comando cartas
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -57,6 +58,8 @@ function processMessage($message) {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosvatbrz") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 7)) == "/cartas") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('cartas', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}
