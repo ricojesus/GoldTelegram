@@ -16,6 +16,7 @@
 * 1.5   08/08/2016 	Tiago Rosa  		Inserindo comando /pilotovatbrz
 * 1.6	13/08/2016	Rodrigo Figueiredo	Edição de textos e layout
 * 1.7   15/08/2016	Tiago Rosa		Inserindo comando /cartas
+* 1.8   16/08/2016  	Tiago Rosa		Inserindo comandos /atcivaobr e /pilotosivaobr
 *------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -40,6 +41,10 @@ function getResult($mensagem, $text){
 		$out = getPilotovatbrz();
 	} elseif($mensagem=="cartas"){
 		$out = getCartas(substr($text,8,4),substr($text,12));
+	} elseif($mensagem=="atcivaobr"){
+		$out = getatcivaobr();
+	} elseif($mensagem=="pilotosivaobr"){
+		$out = getpilotosivaobr();
 	}
 	return $out;
 }
@@ -113,6 +118,9 @@ function getAjuda(){
 	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
 	$resultado .= "✔️ /atcvatbrz - Comando para visualizar Controladores na VATBRZ  \n";
 	$resultado .= "✔️ /pilotosvatbrz - Comando para visualizar os pilotos da VATBRZ  \n";
+	$resultado .= "✔️ /cartas - Comando para trazer as cartas de um aeródromo  \n";
+	$resultado .= "✔️ /atcivaobr - Comando para visualizar Controladores na IVAOBR  \n";
+	$resultado .= "✔️ /pilotosivaobr - Comando para visualizar os pilotos da IVAOBR  \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -255,6 +263,95 @@ function getCartas($icao,$tipo){
 		return $resultado;
 	}catch (Exception $e){
 		return 'Erro consultando cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
+	}
+}
+function getatcivaobr(){
+	try{
+		$retorno = '';
+		$url = file_get_contents("https://api.ivao.aero/getdata/whazzup");
+		
+		$cabecalho = explode(":","callsign:vid:name:clienttype:frequency:latitude:longitude:altitude:groundspeed:flightplanaircraft:flightplancruisingspeed:flightplandepartureaerodrome:flightplancruisinglevel:flightplandestinationaerodrome:server:protocol:combinedrating:transpondercode:facilitytype:visualrange:flightplanrevision:flightplanflightrules:flightplandeparturetime:flightplanactualdeparturetime:flightplaneethours:flightplaneetminutes:flightplanendurancehours:flightplanenduranceminutes:flightplanalternateaerodrome:flightplanitem18otherinfo:flightplanroute:unused1:unused2:unused3:unused4:atis:atistime:connectiontime:softwarename:softwareversion:administrativeversion:atc/pilotversion:flightplan2ndalternateaerodrome:flightplantypeofflight:flightplanpersonsonboard:heading:onground:simulator:plane");
+		
+		$pos = strpos($url,'!CLIENTS');
+		$tabela_ini = substr($url, $pos+7, strlen($url));
+		$pos_fim = strpos($tabela_ini,'!AIRPORTS');
+		$tabela_fim = substr($tabela_ini, 1, $pos_fim-1);
+		
+		$matriz = explode("\n", $tabela_fim);
+		
+		for($i = 0;$i< count($matriz); $i++){
+			if (trim($matriz[$i]) != ""){
+				$reg = explode(":",$matriz[$i]);
+				$reg = array_combine($cabecalho,$reg);
+				
+				if($reg['clienttype'] == 'ATC'){
+					if(substr($reg['callsign'],0,2)=='SB'){
+						$retorno .= "<b>".$reg['callsign']."</b> - ".$reg['vid']." - ".$reg['frequency']."\n";
+					}
+				}
+			}
+		}
+		if ($retorno == ''){
+			$retorno = "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 122.800 \n";
+		}
+	
+		$resultado = "<b>✈️ A Gold Virtual informa o(s) ATC(s) online na IVAOBR:</b> \nFormato: Posição - VID - Frequência \n\n" ;
+	
+		return $resultado . $retorno. DEFAULT_FOOTER;
+		
+	}catch (Exception $e){
+		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
+	}
+}
+function getpilotosivaobr(){
+	try{
+		$retorno = '';
+		$inserir = 0;
+		$url = file_get_contents("https://api.ivao.aero/getdata/whazzup");
+		
+		$cabecalho = explode(":","callsign:vid:name:clienttype:frequency:latitude:longitude:altitude:groundspeed:flightplanaircraft:flightplancruisingspeed:flightplandepartureaerodrome:flightplancruisinglevel:flightplandestinationaerodrome:server:protocol:combinedrating:transpondercode:facilitytype:visualrange:flightplanrevision:flightplanflightrules:flightplandeparturetime:flightplanactualdeparturetime:flightplaneethours:flightplaneetminutes:flightplanendurancehours:flightplanenduranceminutes:flightplanalternateaerodrome:flightplanitem18otherinfo:flightplanroute:unused1:unused2:unused3:unused4:atis:atistime:connectiontime:softwarename:softwareversion:administrativeversion:atc/pilotversion:flightplan2ndalternateaerodrome:flightplantypeofflight:flightplanpersonsonboard:heading:onground:simulator:plane");
+		
+		$pos = strpos($url,'!CLIENTS');
+		$tabela_ini = substr($url, $pos+7, strlen($url));
+		$pos_fim = strpos($tabela_ini,'!AIRPORTS');
+		$tabela_fim = substr($tabela_ini, 1, $pos_fim-1);
+		
+		$matriz = explode("\n", $tabela_fim);
+		
+		for($i = 0;$i< count($matriz); $i++){
+			if (trim($matriz[$i]) != ""){
+				$reg = explode(":",$matriz[$i]);
+				$reg = array_combine($cabecalho,$reg);
+				
+				if($reg['clienttype'] == 'PILOT'){
+					if(substr($reg['flightplandepartureaerodrome'],0,2)=='SB'  || substr($reg['flightplandepartureaerodrome'],0,2)=='SD' ||
+						substr($reg['flightplandepartureaerodrome'],0,2)=='SI' || substr($reg['flightplandepartureaerodrome'],0,2)=='SJ'||
+						substr($reg['flightplandepartureaerodrome'],0,2)=='SN' || substr($reg['flightplandepartureaerodrome'],0,2)=='SW'){
+							$inserir = 1;
+					}
+					if(substr($reg['flightplandestinationaerodrome'],0,2)=='SB'  || substr($reg['flightplandestinationaerodrome'],0,2)=='SD' ||
+						substr($reg['flightplandestinationaerodrome'],0,2)=='SI' || substr($reg['flightplandestinationaerodrome'],0,2)=='SJ'||
+						substr($reg['flightplandestinationaerodrome'],0,2)=='SN' || substr($reg['flightplandestinationaerodrome'],0,2)=='SW'){
+							$inserir = 1;
+					}
+					
+					if($inserir == 1){
+						$retorno .= "<b>".$reg['callsign']."</b> - ".$reg['vid']." - (".$reg['flightplandepartureaerodrome']." > ".$reg['flightplandestinationaerodrome'].")\n\n";
+						$inserir = 0;
+					}
+				}
+			}
+		}
+		if ($retorno == ''){
+			$retorno = "🚨 Infelizmente não temos pilotos voando na IVAOBR no momento. \n";
+		}
+		
+		$resultado = "<b>✈️ A Gold Virtual informa o(s) Piloto(s) Online na IVAOBR:</b> \nFormato: Callsign - VID - (Dep > Dest) \n\n" ;
+		
+		return $resultado . $retorno. DEFAULT_FOOTER;
+		
+	}catch (Exception $e){
+		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
 	}
 }
 ?>

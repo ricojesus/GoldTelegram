@@ -16,6 +16,7 @@
 * 1.2	06/08/2016	Ricardo Jesus	Alteração do comando vatbrz para atcvatbrz
 * 1.3	08/08/2016	Tiago Rosa	Implementação do comando pilotosvatbrz
 * 1.4	15/08/2016	Tiago Rosa	Implementação do comando cartas
+* 1.5   16/08/2016  	Tiago Rosa	Implementação dos comandos atcivaobr e pilotosivaobr
 * ------ ---------- ---------------- --------------------------------------
 * 
 */
@@ -33,6 +34,7 @@ require('parser.php');
 define('BOT_TOKEN', '269999230:AAFcwOL7UCs0BsYHqoXVhy9V5KEsinTlNaw');
 define('API_URL', 'https://api.telegram.org/bot'.BOT_TOKEN.'/');
 
+
 //Metodo de entrada das requisições, interpreta os comandos e direciona para o Parse
 function processMessage($message) {
 	// processa a mensagem recebida
@@ -44,10 +46,9 @@ function processMessage($message) {
 	}elseif(isset($message['text'])) {
 		$text = $message['text'];//texto recebido na mensagem
 
-		if (strtolower(substr($text, 0, 6)) == "/start") {
+		if (strtolower(substr($text, 0, 6)) == "/start") {						
 			$text = $message['from']['first_name'];
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
-
 		} elseif (strtolower(substr($text, 0, 6)) == "/metar") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/regras") {
@@ -60,6 +61,10 @@ function processMessage($message) {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/cartas") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('cartas', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 10)) == "/atcivaobr") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcivaobr', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosivaobr") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosivaobr', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}
@@ -81,6 +86,7 @@ function sendMessage($method, $parameters) {
 }
 
 // ** codigo para envio automatico quando no site ** //
+
 
 $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
