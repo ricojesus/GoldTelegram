@@ -6,19 +6,20 @@
 *  
 * Programa responsável por transformar a requisição num resultado em padrão texto.
 *
-*Versão Data       Autor            Descricao
-*------ ---------- ---------------- --------------------------------------
+*Versão Data       Autor            	Descricao
+*------ ---------- ---------------- 	--------------------------------------
 * 1.0   23/07/2016 	Ricardo Jesus	 	Versão inicial
-* 1.1	29/07/2016	Tiago Rosa	 	Melhorias gerais e inclusao do Vatsim
+* 1.1	29/07/2016	Tiago Rosa	 		Melhorias gerais e inclusao do Vatsim
 * 1.2	30/07/2016	Rodrigo Figueiredo	Edição dos textos
-* 1.3   04/08/2016  	Tiago Rosa		Mudança na forma como pegar os Atcs da Vatsim e mudado o nome do comando na função ajuda para VATBRZ
+* 1.3   04/08/2016  Tiago Rosa			Mudança na forma como pegar os Atcs da Vatsim e mudado o nome do comando na função ajuda para VATBRZ
 * 1.4 	06/08/2016 	Ricardo Jesus		Ajustes para o comando atcvatbrz e tabulacao do metodo vatsim
 * 1.5   08/08/2016 	Tiago Rosa  		Inserindo comando /pilotovatbrz
 * 1.6	13/08/2016	Rodrigo Figueiredo	Edição de textos e layout
-* 1.7   15/08/2016	Tiago Rosa		Inserindo comando /cartas
-* 1.8   16/08/2016  	Tiago Rosa		Inserindo comandos /atcivaobr e /pilotosivaobr
-* 1.9	16/08/2016 Ricardo Jesus	Inclusão da Rotina de gravação e consulta de estatisticas
-*------ ---------- ---------------- --------------------------------------
+* 1.7   15/08/2016	Tiago Rosa			Inserindo comando /cartas
+* 1.8   16/08/2016  Tiago Rosa			Inserindo comandos /atcivaobr e /pilotosivaobr
+* 1.9	16/08/2016 	Ricardo Jesus		Inclusão da Rotina de gravação e consulta de estatisticas
+* 1.10	17/08/2016	Tiago Rosa			Inclusão do comando /pv
+*------ ---------- ---------------- 	--------------------------------------
 * 
 */
 
@@ -48,8 +49,10 @@ function getResult($mensagem, $text, $user){
 		$out = getatcivaobr();
 	} elseif($mensagem=="pilotosivaobr"){
 		$out = getpilotosivaobr();
-	} elseif($mensagem=="estatisticas"){
+	} elseif($mensagem=="bot"){
 		$out = getEstatisticas();
+	} elseif($mensagem=="pv"){
+		$out = getPv(substr($text,4,4),substr($text,9,4));
 	}
 
 	gravaEstatistica($mensagem, $user);
@@ -130,6 +133,7 @@ function getAjuda(){
 	$resultado .= "✔️ /atcivaobr - Comando para visualizar Controladores na IVAOBR  \n";
 	$resultado .= "✔️ /pilotosivaobr - Comando para visualizar os pilotos da IVAOBR  \n";
 	$resultado .= "✔️ /estatisticas - Comando para visualizar o Ranking dos serviços mais consultados  \n";
+	$resultado .= "✔️ /pv - Comando para os planos de voos repetitivos \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -182,7 +186,7 @@ function getvatsim(){
 	}
 
 	if ($retorno == ''){
-		$retorno = "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 123.450 \n";
+		return "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 123.450 \n". DEFAULT_FOOTER;
 	}
 	$resultado = "<b>✈️ A Gold Virtual informa o(s) ATC(s) online na VATBRZ:</b> \nFormato: Posição - Nome do ATC - Frequência \n\n" ;
 	
@@ -232,7 +236,7 @@ function getPilotovatbrz(){
 		}
 	}
 	if ($retorno == ''){
-		$retorno = "🚨 Infelizmente não temos pilotos voando na VATBRZ no momento. \n";
+		return "🚨 Infelizmente não temos pilotos voando na VATBRZ no momento. \n". DEFAULT_FOOTER;
 	}
 	$resultado = "<b>✈️ A Gold Virtual informa o(s) Piloto(s) Online na VATBRZ:</b> \nFormato: Callsign - Nome do Piloto (Dep > Dest) \n\n" ;
 	return $resultado . $retorno. DEFAULT_FOOTER;
@@ -301,7 +305,7 @@ function getatcivaobr(){
 			}
 		}
 		if ($retorno == ''){
-			$retorno = "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 122.800 \n";
+			return "🚨 Infelizmente não temos controladores onlines no momento. Realize seu voo normalmente e não esqueça de reportar via texto na frequência da UNICOM 122.800 \n". DEFAULT_FOOTER;
 		}
 	
 		$resultado = "<b>✈️ A Gold Virtual informa o(s) ATC(s) online na IVAOBR:</b> \nFormato: Posição - VID - Frequência \n\n" ;
@@ -352,7 +356,7 @@ function getpilotosivaobr(){
 			}
 		}
 		if ($retorno == ''){
-			$retorno = "🚨 Infelizmente não temos pilotos voando na IVAOBR no momento. \n";
+			return "🚨 Infelizmente não temos pilotos voando na IVAOBR no momento. \n". DEFAULT_FOOTER;
 		}
 		
 		$resultado = "<b>✈️ A Gold Virtual informa o(s) Piloto(s) Online na IVAOBR:</b> \nFormato: Callsign - VID - (Dep > Dest) \n\n" ;
@@ -360,7 +364,7 @@ function getpilotosivaobr(){
 		return $resultado . $retorno. DEFAULT_FOOTER;
 		
 	}catch (Exception $e){
-		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold \n' . $e->getMessage();
+		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
 	}
 }
 
@@ -405,5 +409,64 @@ function gravaEstatistica ($comando, $user){
 	}
 	return $resultado;
 }
-
+function getPv($icaoOrig,$icaoDest){
+	try{
+		$resultado = '';
+		$origem = '';
+		$destino = '';
+		$nivel = '';
+		$rota = '';
+		$cia = '';
+		$entrou = 0;
+		$retorno = '';
+		$count=0;
+		
+		$url = file_get_contents("http://www.cgna.gov.br/rpl/Movimento/Mov_".$icaoOrig."_CS_EOBT.txt");
+		$tabela = substr($url, 799, strlen($url));
+	
+		$matriz = explode("\n", $tabela);
+		
+		$item = array();
+		$j = -1;
+		for($i = 0;$i< count($matriz); $i++){
+			$matriz[$i] = substr($matriz[$i],0,104);
+			if (trim($matriz[$i]) != ""){
+				$origem = trim(substr($matriz[$i],40,4));
+				$destino = substr($matriz[$i],95,4);
+				$nivel = substr($matriz[$i],55,3);
+				$rota = substr($matriz[$i],59,35);
+				$cia = substr($matriz[$i],25,3);
+				
+				if($origem == $icaoOrig && $destino == $icaoDest)
+				{
+					if($origem == ""){ //complemento
+						$items[$j] .= " ".$rota;
+					}
+					else{ //principal					
+						$items[++$j] = "\n<b>".$origem." > ".$destino."</b> - ".$nivel." - ".$cia." - ".$rota;
+					}
+					$count++;
+				}
+			}
+		}
+		
+		if ($count==0){
+			return "🚨 Infelizmente não existe nenhum voo para o trecho entre $icaoOrig e $icaoDest na base de dados do CGNA. Procure por outras ferramentas para planejar este voo.";
+		}
+		
+		$items = array_unique($items); //removendo duplicados.
+		
+		//Exibindo.
+		foreach($items as $item){
+			$retorno .= $item;
+		}
+		
+		$resultado = " 🏁 <b>A Gold Virtual informa o(s) Plano(s) de Voo(s) entre $icaoOrig e $icaoDest: </b> \nFormato: Origem > Destino - Nivel de Voo - Cia - Rota \n" ;
+		
+		return $resultado . $retorno."\n".DEFAULT_FOOTER;
+		
+	}catch (Exception $e){
+		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
+	}
+}
 ?>

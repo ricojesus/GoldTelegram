@@ -18,6 +18,7 @@
 * 1.4	15/08/2016	Tiago Rosa		 Implementação do comando cartas
 * 1.5   16/08/2016  Tiago Rosa		 Implementação dos comandos atcivaobr e pilotosivaobr
 * 1.6	16/08/2016	Ricardo Jesus	 Inclusão de Param. User para todos os comandos, para as estatisticas
+* 1.7	17/08/2016	Tiago Rosa	 	 Inclusão do comando /pv
 *------ ----------  ---------------- --------------------------------------
 * 
 */
@@ -67,8 +68,10 @@ function processMessage($message) {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcivaobr', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosivaobr") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosivaobr', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
-		} elseif (strtolower(substr($text, 0, 13)) == "/estatisticas") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('estatisticas', null, null),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 4)) == "/bot") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('bot', null, null),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 3)) == "/pv") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pv', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}
