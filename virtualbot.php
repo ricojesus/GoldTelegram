@@ -9,15 +9,16 @@
 *
 * Versão Data       Autor            Descricao
 * ------ ---------- ---------------- --------------------------------------
-* 1.0    23/07/2016 Ricardo Jesus	Versão inicial
-* 1.1    04/08/2016 Tiago Rosa       	1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
-*					2.Desabilitado o Rodapé (webpage) da mensagem de start)
-*					3.Alterado o comando de vatsim para vatbrz
-* 1.2	06/08/2016	Ricardo Jesus	Alteração do comando vatbrz para atcvatbrz
-* 1.3	08/08/2016	Tiago Rosa	Implementação do comando pilotosvatbrz
-* 1.4	15/08/2016	Tiago Rosa	Implementação do comando cartas
-* 1.5   16/08/2016  	Tiago Rosa	Implementação dos comandos atcivaobr e pilotosivaobr
-* ------ ---------- ---------------- --------------------------------------
+* 1.0    23/07/2016 Ricardo Jesus	 Versão inicial
+* 1.1    04/08/2016 Tiago Rosa       1.implantação da mensagem de boas vindas, (adicionado um membro no grupo)
+*									 2.Desabilitado o Rodapé (webpage) da mensagem de start)
+*									 3.Alterado o comando de vatsim para vatbrz
+* 1.2	06/08/2016	Ricardo Jesus	 Alteração do comando vatbrz para atcvatbrz
+* 1.3	08/08/2016	Tiago Rosa		 Implementação do comando pilotosvatbrz
+* 1.4	15/08/2016	Tiago Rosa		 Implementação do comando cartas
+* 1.5   16/08/2016  Tiago Rosa		 Implementação dos comandos atcivaobr e pilotosivaobr
+* 1.6	16/08/2016	Ricardo Jesus	 Inclusão de Param. User para todos os comandos, para as estatisticas
+*------ ----------  ---------------- --------------------------------------
 * 
 */
 require('parser.php');
@@ -45,26 +46,29 @@ function processMessage($message) {
 		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 	}elseif(isset($message['text'])) {
 		$text = $message['text'];//texto recebido na mensagem
+		$user = $message['from']['first_name'];
 
 		if (strtolower(substr($text, 0, 6)) == "/start") {						
 			$text = $message['from']['first_name'];
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/metar") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/regras") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('regras', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('regras', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/ajuda") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('ajuda', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 10)) == "/atcvatbrz") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcvatbrz', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosvatbrz") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosvatbrz', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosvatbrz', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/cartas") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('cartas', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('cartas', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 10)) == "/atcivaobr") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcivaobr', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('atcivaobr', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 14)) == "/pilotosivaobr") {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosivaobr', $text),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pilotosivaobr', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		} elseif (strtolower(substr($text, 0, 13)) == "/estatisticas") {
+			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('estatisticas', null, null),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
 		}

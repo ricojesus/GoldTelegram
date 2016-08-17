@@ -17,14 +17,17 @@
 * 1.6	13/08/2016	Rodrigo Figueiredo	Edição de textos e layout
 * 1.7   15/08/2016	Tiago Rosa		Inserindo comando /cartas
 * 1.8   16/08/2016  	Tiago Rosa		Inserindo comandos /atcivaobr e /pilotosivaobr
+* 1.9	16/08/2016 Ricardo Jesus	Inclusão da Rotina de gravação e consulta de estatisticas
 *------ ---------- ---------------- --------------------------------------
 * 
 */
 
+require('DAO.php');
+
 define('DEFAULT_FOOTER', "\n <b>" . " --- IMPORTANTE --- " . "</b> \n  ⚠️ Atenção: Recomendo que me use preferencialmente de forma privada, para isso basta clicar aqui ➡️ @GoldVirtualBOT. \n \n Sempre que precisar de auxilio me chame digitando /ajuda \n by goldvirtual.com.br ");
 
 //Metodo principal responsavel por direcionar a requisicao para o metodo correspondente
-function getResult($mensagem, $text){
+function getResult($mensagem, $text, $user){
 	$out = '';
 
 	if($mensagem=="start"){
@@ -45,7 +48,12 @@ function getResult($mensagem, $text){
 		$out = getatcivaobr();
 	} elseif($mensagem=="pilotosivaobr"){
 		$out = getpilotosivaobr();
+	} elseif($mensagem=="estatisticas"){
+		$out = getEstatisticas();
 	}
+
+	gravaEstatistica($mensagem, $user);
+
 	return $out;
 }
 
@@ -121,6 +129,7 @@ function getAjuda(){
 	$resultado .= "✔️ /cartas - Comando para trazer as cartas de um aeródromo  \n";
 	$resultado .= "✔️ /atcivaobr - Comando para visualizar Controladores na IVAOBR  \n";
 	$resultado .= "✔️ /pilotosivaobr - Comando para visualizar os pilotos da IVAOBR  \n";
+	$resultado .= "✔️ /estatisticas - Comando para visualizar o Ranking dos serviços mais consultados  \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
@@ -351,7 +360,50 @@ function getpilotosivaobr(){
 		return $resultado . $retorno. DEFAULT_FOOTER;
 		
 	}catch (Exception $e){
-		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold' . $e->getMessage();
+		return 'Erro consultando Cartas, favor consultar a staff de TI da Gold \n' . $e->getMessage();
 	}
 }
+
+function getEstatisticas (){
+	$resultado = '';
+
+	try{
+		$dao = new DAO();
+
+		$result = $dao->executeQuery("SELECT ds_comando, COUNT(*) qtde FROM estatisticas group by ds_comando order by 2 DESC");
+
+		$resultado = "Raking dos Serviços mais consultados \n";
+		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+		    $resultado .= $row["ds_comando"] . " - " . $row["qtde"] . " \n"; 
+		}
+
+
+		$result = $dao->executeQuery("SELECT nm_usuario, COUNT(*) qtde FROM estatisticas group by nm_usuario order by 2 DESC");
+
+		$resultado .= "\n Raking dos Pilotos com mais consultas \n";
+		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+		    $resultado .= $row["nm_usuario"] . " - " . $row["qtde"] . " \n"; 
+		}
+
+
+	}catch(Exception $e){
+		$resultado = "Erro gravando estatisticas \n " . $e->getMessage();
+	}
+	return $resultado;
+}
+
+function gravaEstatistica ($comando, $user){
+	$resultado = '';
+
+	try{
+		$dao = new DAO();
+
+		$dao->executeQuery("insert into estatisticas (nm_usuario, ds_comando) values ('". $user . "','" . $comando . "')" );
+
+	}catch(Exception $e){
+		$resultado = "Erro gravando estatisticas \n " . $e->getMessage();
+	}
+	return $resultado;
+}
+
 ?>
