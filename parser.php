@@ -6,20 +6,20 @@
 *  
 * Programa responsável por transformar a requisição num resultado em padrão texto.
 *
-*Versão Data       Autor            	Descricao
-*------ ---------- ---------------- 	--------------------------------------
+*Versão Data       Autor            Descricao
+*------ ---------- ---------------- --------------------------------------
 * 1.0   23/07/2016 	Ricardo Jesus	 	Versão inicial
-* 1.1	29/07/2016	Tiago Rosa	 		Melhorias gerais e inclusao do Vatsim
+* 1.1	29/07/2016	Tiago Rosa	 	Melhorias gerais e inclusao do Vatsim
 * 1.2	30/07/2016	Rodrigo Figueiredo	Edição dos textos
-* 1.3   04/08/2016  Tiago Rosa			Mudança na forma como pegar os Atcs da Vatsim e mudado o nome do comando na função ajuda para VATBRZ
+* 1.3   04/08/2016  	Tiago Rosa		Mudança na forma como pegar os Atcs da Vatsim e mudado o nome do comando na função ajuda para VATBRZ
 * 1.4 	06/08/2016 	Ricardo Jesus		Ajustes para o comando atcvatbrz e tabulacao do metodo vatsim
 * 1.5   08/08/2016 	Tiago Rosa  		Inserindo comando /pilotovatbrz
 * 1.6	13/08/2016	Rodrigo Figueiredo	Edição de textos e layout
-* 1.7   15/08/2016	Tiago Rosa			Inserindo comando /cartas
-* 1.8   16/08/2016  Tiago Rosa			Inserindo comandos /atcivaobr e /pilotosivaobr
+* 1.7   15/08/2016	Tiago Rosa		Inserindo comando /cartas
+* 1.8   16/08/2016  	Tiago Rosa		Inserindo comandos /atcivaobr e /pilotosivaobr
 * 1.9	16/08/2016 	Ricardo Jesus		Inclusão da Rotina de gravação e consulta de estatisticas
-* 1.10	17/08/2016	Tiago Rosa			Inclusão do comando /pv
-*------ ---------- ---------------- 	--------------------------------------
+* 1.10	17/08/2016	Tiago Rosa		Inclusão do comando /pv
+*------ ---------- ---------------- --------------------------------------
 * 
 */
 
@@ -132,7 +132,7 @@ function getAjuda(){
 	$resultado .= "✔️ /cartas - Comando para trazer as cartas de um aeródromo  \n";
 	$resultado .= "✔️ /atcivaobr - Comando para visualizar Controladores na IVAOBR  \n";
 	$resultado .= "✔️ /pilotosivaobr - Comando para visualizar os pilotos da IVAOBR  \n";
-	$resultado .= "✔️ /estatisticas - Comando para visualizar o Ranking dos serviços mais consultados  \n";
+	$resultado .= "✔️ /bot - Comando para visualizar o Ranking dos serviços mais consultados  \n";
 	$resultado .= "✔️ /pv - Comando para os planos de voos repetitivos \n";
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
@@ -168,7 +168,7 @@ function getvatsim(){
 					$Frequency = $g->Frequency;
 
 					foreach ($callsign as $value) {
-						$registro .=  $value->text . ' - ';
+						$registro .=  '<b>'.$value->text . '</b> - ';
 					}
 
 					foreach ($Name as $value) {
@@ -178,7 +178,7 @@ function getvatsim(){
 						$registro .=  $value->text;
 					}
 					if (substr($registro,0,2) == 'SB'){
-						$retorno .= $registro . "\n\n";
+						$retorno .= $registro . "\n";
 					}
 				} 
 			} 
@@ -210,7 +210,7 @@ function getPilotovatbrz(){
 					$dep = $g->Dep;
 					$dest = $g->Dest;
 					foreach ($callsign as $value) {
-						$registro .=  $value->text . ' - ';
+						$registro .=  '<b>'.$value->text . '</b> - ';
 					}
 					foreach ($Name as $value) {
 						$registro .=  str_replace('-','',substr(trim($value->text),0,strlen(trim($value->text))-4)) . ' (';
@@ -228,7 +228,7 @@ function getPilotovatbrz(){
 						}
 					}
 					if ($inserir == 1){
-						$retorno .= $registro . ")\n\n";
+						$retorno .= $registro . ")\n";
 						$inserir = 0;
 					}
 				} 
@@ -269,7 +269,7 @@ function getCartas($icao,$tipo){
 				$resultado .= DEFAULT_FOOTER;
 			}
 			else{
-				$resultado = "🚨 Olá, Não conseguimos encontra nenhuma carta {$tipo} para o aeródromo {$icao}";
+				$resultado = "🚨 Olá, informe um ICAO válido para que eu consiga te mostrar as cartas correspondentes \n (Ex.: /cartas SBJV SID) \n";
 				$resultado .= DEFAULT_FOOTER;
 			}
 		}
@@ -349,7 +349,7 @@ function getpilotosivaobr(){
 					}
 					
 					if($inserir == 1){
-						$retorno .= "<b>".$reg['callsign']."</b> - ".$reg['vid']." - (".$reg['flightplandepartureaerodrome']." > ".$reg['flightplandestinationaerodrome'].")\n\n";
+						$retorno .= "<b>".$reg['callsign']."</b> - ".$reg['vid']." - (".$reg['flightplandepartureaerodrome']." > ".$reg['flightplandestinationaerodrome'].")\n";
 						$inserir = 0;
 					}
 				}
@@ -376,7 +376,7 @@ function getEstatisticas (){
 
 		$result = $dao->executeQuery("SELECT ds_comando, COUNT(*) qtde FROM estatisticas group by ds_comando order by 2 DESC");
 
-		$resultado = "Raking dos Serviços mais consultados \n";
+		$resultado = "📊 A Gold Virtual informa as estatísticas de nosso BOT: \n\n 🔄 Ranking dos Comandos mais utilizados \n";
 		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
 		    $resultado .= $row["ds_comando"] . " - " . $row["qtde"] . " \n"; 
 		}
@@ -384,7 +384,7 @@ function getEstatisticas (){
 
 		$result = $dao->executeQuery("SELECT nm_usuario, COUNT(*) qtde FROM estatisticas group by nm_usuario order by 2 DESC");
 
-		$resultado .= "\n Raking dos Pilotos com mais consultas \n";
+		$resultado .= "\n 🔄 Ranking dos Usuários que mais utilizaram \n";
 		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
 		    $resultado .= $row["nm_usuario"] . " - " . $row["qtde"] . " \n"; 
 		}
