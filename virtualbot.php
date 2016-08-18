@@ -18,7 +18,8 @@
 * 1.4	15/08/2016	Tiago Rosa		 Implementação do comando cartas
 * 1.5   16/08/2016  Tiago Rosa		 Implementação dos comandos atcivaobr e pilotosivaobr
 * 1.6	16/08/2016	Ricardo Jesus	 Inclusão de Param. User para todos os comandos, para as estatisticas
-* 1.7	17/08/2016	Tiago Rosa	 	 Inclusão do comando /pv
+* 1.7	17/08/2016	Tiago Rosa	 Inclusão do comando /pv
+* 1.8	18/08/2016	Tiago Rosa		 envio de gif no start
 *------ ----------  ---------------- --------------------------------------
 * 
 */
@@ -44,7 +45,7 @@ function processMessage($message) {
 	$chat_id = $message['chat']['id'];
 	$user = $message['new_chat_member']['first_name'];
 	if($user != ''){
-		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', null,$user),'parse_mode'=>'HTML'));
 	}elseif(isset($message['text'])) {
 		$text = $message['text'];//texto recebido na mensagem
 		$user = $message['from']['first_name'];
@@ -52,6 +53,7 @@ function processMessage($message) {
 		if (strtolower(substr($text, 0, 6)) == "/start") {						
 			$text = $message['from']['first_name'];
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+			sendMessage("sendPhoto", array('chat_id' => $chat_id, "photo" => "AgADAQADqqcxG37cFxAvQftM2BTX8QeE5y8ABLu7myirrGgkASwBAAEC",'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 6)) == "/metar") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('metar', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} elseif (strtolower(substr($text, 0, 7)) == "/regras") {
