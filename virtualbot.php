@@ -45,7 +45,8 @@ function processMessage($message) {
 	$chat_id = $message['chat']['id'];
 	$user = $message['new_chat_member']['first_name'];
 	if($user != ''){
-		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', null,$user),'parse_mode'=>'HTML'));
+		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('start', $message['from']['first_name']),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
+		sendMessage("sendPhoto", array('chat_id' => $chat_id, "photo" => "AgADAQADqqcxG37cFxAvQftM2BTX8QeE5y8ABLu7myirrGgkASwBAAEC",'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 	}elseif(isset($message['text'])) {
 		$text = $message['text'];//texto recebido na mensagem
 		$user = $message['from']['first_name'];
@@ -75,10 +76,10 @@ function processMessage($message) {
 		} elseif (strtolower(substr($text, 0, 3)) == "/pv") {
 			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => getResult('pv', $text, $user),'disable_web_page_preview'=>true,'parse_mode'=>'HTML'));
 		} else {
-			sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
+			if (substr($text,0,1)=="/"){
+				sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, '. $message['from']['first_name']. ' não consegui compreender sua mensagem!'));
+			}
 		}
-	} else {
-		sendMessage("sendMessage", array('chat_id' => $chat_id, "text" => 'Desculpe, mas só compreendo mensagens em texto'));
 	}
 }
 

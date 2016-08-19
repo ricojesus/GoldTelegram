@@ -124,16 +124,16 @@ function getAjuda(){
 
 	$resultado = "<b>💡 Olá, eu sou o BOT da Gold Virtual Airlines!</b>  \n\n";
 	$resultado .= "Veja abaixo todos os comandos que estão disponiveis: \n";
-	$resultado .= "✔️ /ajuda - Comando para ver as funcionalidades do BOT  \n";
-	$resultado .= "✔️ /regras - Comando para ver as Regras do Grupo  \n";
-	$resultado .= "✔️ /metar - Comando para visualizar o METAR e TAF  \n";
-	$resultado .= "✔️ /atcvatbrz - Comando para visualizar Controladores na VATBRZ  \n";
-	$resultado .= "✔️ /pilotosvatbrz - Comando para visualizar os pilotos da VATBRZ  \n";
-	$resultado .= "✔️ /cartas - Comando para trazer as cartas de um aeródromo  \n";
-	$resultado .= "✔️ /atcivaobr - Comando para visualizar Controladores na IVAOBR  \n";
-	$resultado .= "✔️ /pilotosivaobr - Comando para visualizar os pilotos da IVAOBR  \n";
-	$resultado .= "✔️ /bot - Comando para visualizar o Ranking dos serviços mais consultados  \n";
-	$resultado .= "✔️ /pv - Comando para os planos de voos repetitivos \n";
+	$resultado .= "✔️ /ajuda - Visualizar as funcionalidades do BOT  \n";
+	$resultado .= "✔️ /regras - Visualzar as Regras do Grupo  \n";
+	$resultado .= "✔️ /metar - Informação do METAR e TAF de aeródromo  \n";
+	$resultado .= "✔️ /cartas - Visualizar cartas de um aeródromo  \n";
+	$resultado .= "✔️ /pv - Planos de voos repetitivos \n";	
+	$resultado .= "✔️ /atcvatbrz - Controladores online na VATBRZ  \n";
+	$resultado .= "✔️ /pilotosvatbrz - Pilotos voando agora na VATBRZ  \n";
+	$resultado .= "✔️ /atcivaobr - Controladores online na IVAOBR  \n";
+	$resultado .= "✔️ /pilotosivaobr - Pilotos voando agora na IVAOBR  \n";	
+	$resultado .= "✔️ /bot - Ranking dos serviços mais consultados no BOT  \n";	
 	$resultado .= "\n<b>✈️ Siga-nos: Redes Sociais!</b> \n";
 	$resultado .= "Facebook: www.facebook.com/GOLDVIRTUAL \n";
 	$resultado .= "Youtube: www.youtube.com/user/GoldVirtualAirlines \n";
